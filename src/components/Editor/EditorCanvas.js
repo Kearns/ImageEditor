@@ -1,7 +1,9 @@
 import React from 'react'
 import CroppingTool from './CroppingTool'
 
-export default class EditorCanvas extends React.Component {
+import { connect } from 'react-redux'
+
+class EditorCanvas extends React.Component {
 
     constructor(props) {
         super(props)
@@ -47,8 +49,9 @@ export default class EditorCanvas extends React.Component {
 
             // gather all filters into a single string
             let filters = ''; 
-            for(let key in this.props.filter) {
-                filters += ` ${key}(${this.props.filter[key]})`
+            for(let key in this.props.filters) {
+                let currentFilter = this.props.filters[key]
+                filters += ` ${currentFilter.filter}(${currentFilter.value + currentFilter.unit})`
             }
             
             //set the filter prior to draw
@@ -141,3 +144,11 @@ export default class EditorCanvas extends React.Component {
         )
     }
 }
+
+const mapStateToProps = state => {
+    return {
+        filters: state.filterReducers
+    }
+}
+
+export default connect( mapStateToProps)(EditorCanvas)

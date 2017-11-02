@@ -10,7 +10,7 @@ export default class Editor extends React.Component {
         super(props);
         this.state = { imageLoaded: false, imageData: '', ctxValues: {}, filter: {}, imageSize: []}
     }
-    
+     
     /**
     * load image data into state
     * @param {File} src - image source

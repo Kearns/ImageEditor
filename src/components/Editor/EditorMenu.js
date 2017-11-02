@@ -1,21 +1,24 @@
 import React from 'react'
 import FilterSlider from './FilterSlider'
+import { connect } from 'react-redux'
+import { dispatch} from 'redux'
 
-const EditorMenu = ({ctxValues = {}, onClear, onSave, onPropertyChange, onFilterChange, imageLoaded, onCrop}) => {
-    
+
+const EditorMenu = ({filterValues, updateFilter, ctxValues = {}, onClear, onSave, onPropertyChange, onFilterChange, imageLoaded, onCrop}) => {
+
     let isDisabled = !imageLoaded ? true : false;
 
     return (
         <div className="editor__menu">
             <h2>Filters</h2>
-            <FilterSlider filter="opacity" defaultValue="100" onChange={ onFilterChange } disabled={ isDisabled }/>
-            <FilterSlider filter="contrast" defaultValue="100" onChange={ onFilterChange } max="200" disabled={ isDisabled }/>
-            <FilterSlider filter="saturate" defaultValue="100" label="Saturation" onChange={onFilterChange} max="200" disabled={ isDisabled }/>
-            <FilterSlider filter="hue-rotate" label="Hue" onChange={ onFilterChange } min="-360" max="360" unit="deg" step="1" disabled={ isDisabled }/>
-            <FilterSlider filter="grayscale" onChange={ onFilterChange } disabled={ isDisabled }/>
-            <FilterSlider filter="sepia" onChange={ onFilterChange } disabled={ isDisabled }/>
-            <FilterSlider filter="invert" onChange={ onFilterChange } disabled={ isDisabled }/>
-            <FilterSlider filter="blur" onChange={ onFilterChange } unit="px" disabled={ isDisabled }/>
+            <FilterSlider filter="opacity" value={filterValues.opacity.value} onChange={ updateFilter } disabled={ isDisabled }/>
+            <FilterSlider filter="contrast" value={filterValues.contrast.value} onChange={ updateFilter } max="200" disabled={ isDisabled }/>
+            <FilterSlider filter="saturate" value={filterValues.saturate.value} onChange={ updateFilter } label="Saturation" max="200" disabled={ isDisabled }/>
+            <FilterSlider filter="hue-rotate" value={filterValues.hueRotate.value} onChange={ updateFilter } label="Hue" onChange={ onFilterChange } min="-360" max="360" unit="deg" disabled={ isDisabled }/>
+            <FilterSlider filter="grayscale" value={filterValues.grayscale.value} onChange={ updateFilter } disabled={ isDisabled }/>
+            <FilterSlider filter="sepia" value={filterValues.sepia.value} onChange={ updateFilter } disabled={ isDisabled }/>
+            <FilterSlider filter="invert" value={filterValues.invert.value} onChange={ updateFilter } disabled={ isDisabled }/>
+            <FilterSlider filter="blur" value={filterValues.blur.value} onChange={ updateFilter } unit="px" disabled={ isDisabled }/>
 
             <div className="editor__menu__btns">
             <button className="editor__menu__btn" disabled={ isDisabled } onClick={ e => onCrop(e) }>Crop</button>
@@ -28,4 +31,22 @@ const EditorMenu = ({ctxValues = {}, onClear, onSave, onPropertyChange, onFilter
     )
 }
 
-export default EditorMenu
+const mapStateToProps = state => {
+    return {
+      filterValues: state.filterReducers
+    }
+  }
+  
+  const mapDispatchToProps = dispatch => {
+    return {
+      updateFilter: (e, filter) => {
+        dispatch({type:`UPDATE_${filter.toUpperCase()}`,value: e.target.value})
+      }
+    }
+  }
+  
+  export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(EditorMenu)
+  
